@@ -1,12 +1,12 @@
-package controllers;
+package web;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
 import javax.servlet.annotation.*;
 import java.io.IOException;
 
-@WebServlet(name = "HomeServlet", value = {"", "/home"})//URL-адреса, которые обрабатывает сервлет
-public class HomeServlet extends HttpServlet {
+@WebServlet(name = "PageHome", value = {"", "/home"})//URL-адреса, которые обрабатывает сервлет
+public class PageHome extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)

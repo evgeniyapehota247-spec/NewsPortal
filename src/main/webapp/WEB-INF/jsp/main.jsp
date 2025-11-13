@@ -124,6 +124,7 @@
                         <li><a class="dropdown-item" href="/Controller/changeLanguage?lang=en">🇺🇸 English</a></li>
                     </ul>
                 </div>
+                </div>
             </div>
 
             <!-- Кнопки входа и регистрации -->

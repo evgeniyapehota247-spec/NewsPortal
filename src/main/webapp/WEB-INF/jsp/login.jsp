@@ -6,6 +6,7 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -34,7 +35,7 @@
         .login-container {
             background: white;
             border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             overflow: hidden;
         }
 
@@ -73,7 +74,15 @@
 
         .btn-login:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .alert-error {
+            background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+            border: 1px solid var(--belarus-red);
+            border-radius: 8px;
+            color: #b71c1c;
+            padding: 12px 16px;
         }
     </style>
 </head>
@@ -90,6 +99,19 @@
 
                 <!-- Форма входа -->
                 <div class="login-form">
+                    <!-- Блок ошибки авторизации -->
+                    <c:if test="${requestScope.authError eq null}">
+                        <div class="alert-error mb-4">
+                            <div class="d-flex align-items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-exclamation-triangle-fill me-2" viewBox="0 0 16 16">
+                                    <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+                                </svg>
+                                <strong>Ошибка авторизации</strong>
+                            </div>
+                            <p class="mb-0 mt-2">Неверный email или пароль. Пожалуйста, проверьте введенные данные и попробуйте снова.</p>
+                        </div>
+                    </c:if>
+
                     <form action="login" method="post">
                         <!-- Email -->
                         <div class="mb-3">
@@ -124,7 +146,7 @@
 
                         <!-- Кнопка входа -->
                         <button type="submit" class="btn btn-login w-100 mb-3">Войти</button>
-
+                        <input type="hidden" name="command" value="do_auth"/>
                         <!-- Ссылка на регистрацию -->
                         <div class="text-center">
                             <p class="mb-0">Нет аккаунта?

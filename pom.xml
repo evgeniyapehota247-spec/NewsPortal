@@ -46,5 +46,16 @@
 
   <build>
     <finalName>NewsPortal</finalName>
+
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-war-plugin</artifactId>
+        <version>3.5.0</version> <!-- Use the latest stable version -->
+        <configuration>
+          <!-- Plugin-specific configurations here -->
+        </configuration>
+      </plugin>
+    </plugins>
   </build>
 </project>

@@ -1,21 +1,22 @@
 package web;
 
 import bean.User;
+import service.ServiceException;
 import service.ServiceProvider;
 import service.UserSecurity;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 @WebServlet("/login")
 public class PageLogin extends HttpServlet {
 
-    private UserSecurity userSecurity = ServiceProvider.getInstance().getUserSecurity();
+    private final UserSecurity userSecurity = ServiceProvider.getInstance().getUserSecurity();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -32,24 +33,21 @@ public class PageLogin extends HttpServlet {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
 
-        User user = userSecurity.signIn(email, password);
+        try {
+            User user = userSecurity.signIn(email, password);
 
-        if (user == null) {
-            // Устанавливаем ошибку ТОЛЬКО при неудачной попытке входа
-            request.setAttribute("authError", "true");
+            if (user == null) {
+                response.sendRedirect(request.getContextPath() + "/login?authError=true");
+                System.out.println("ok!");
+                return;
+            }
 
-            // Возвращаем на страницу логина с сообщением об ошибке
-            RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/login.jsp");
-            dispatcher.forward(request, response);
-            System.out.println("ok!");
-            return;
+            HttpSession session = request.getSession(true);//"дай мне сессию, если она есть, иначе создай новую" (по умолчанию)
+            session.setAttribute("auth", user);
 
+            response.sendRedirect(request.getContextPath() + "/userHome");
+        } catch (ServiceException e) {
+            response.sendRedirect("error.jsp");
         }
-        // Сохраняем в сессию
-        request.getSession().setAttribute("user", user);
-
-        // Меняем только эту строку:
-        response.sendRedirect(request.getContextPath() + "/userHome");
-
     }
 }

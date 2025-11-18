@@ -114,7 +114,7 @@
                     </c:if>
 
 <%--                    сессия--%>
-                    <c:if test="${param.message}">
+                    <c:if test="${not empty param.message}">
                         <div class="alert-error mb-4">
                             <div class="d-flex align-items-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-exclamation-triangle-fill me-2" viewBox="0 0 16 16">

@@ -22,13 +22,13 @@ public class PageUserHome extends HttpServlet {
         // "дай мне сессию, если она есть, иначе верни null"
 
         if (session == null){
-            response.sendRedirect(request.getContextPath() + "/login&message=You are not logged in");
+            response.sendRedirect(request.getContextPath() + "/login?message=You are not logged in");
             return;
         }
 
        User user = (User) session.getAttribute("auth");
         if (user == null) {
-            response.sendRedirect(request.getContextPath() + "/login&message=You are not logged in");
+            response.sendRedirect(request.getContextPath() + "/login?message=You are not logged in");
             return;
         }
 

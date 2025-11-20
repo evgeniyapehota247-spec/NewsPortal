@@ -6,6 +6,8 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page isELIgnored="false" %>
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -119,10 +121,11 @@
                         🇷🇺 Русский
                     </button>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="/Controller/changeLanguage?lang=ru">🇷🇺 Русский</a></li>
-                        <li><a class="dropdown-item" href="/Controller/changeLanguage?lang=be">🇧🇾 Беларуская</a></li>
-                        <li><a class="dropdown-item" href="/Controller/changeLanguage?lang=en">🇺🇸 English</a></li>
+                        <li><a class="dropdown-item" href="changeLanguage?lang=ru">🇷🇺 Русский</a></li>
+                        <li><a class="dropdown-item" href="changeLanguage?lang=be">🇧🇾 Беларуская</a></li>
+                        <li><a class="dropdown-item" href="changeLanguage?lang=en">🇺🇸 English</a></li>
                     </ul>
+                </div>
                 </div>
             </div>
 
@@ -144,6 +147,9 @@
 <!-- Основной контент -->
 <main class="container">
     <div class="row g-4">
+
+
+        <c:forEach var="news" items="${requestScope.topNews}">
         <!-- Новость 1 -->
         <div class="col-md-4">
             <div class="card news-card h-100">
@@ -151,56 +157,60 @@
                      class="card-img-top news-image" alt="Экономика Беларуси">
                 <div class="card-body d-flex flex-column">
                     <span class="badge bg-success mb-2 align-self-start">Экономика</span>
-                    <h5 class="card-title">Рост промышленного производства в Беларуси</h5>
-                    <p class="card-text flex-grow-1">За последний квардекс наблюдается устойчивый рост промышленного производства на 5.3% по сравнению с аналогичным периодом прошлого года.</p>
+                    <h5 class="card-title">${news.title}</h5>
+                    <p class="card-text flex-grow-1">${news.brief}</p>
                     <div class="mt-auto">
                         <small class="text-muted">Опубликовано: 03.11.2025</small>
-                        <a href="/Controller/fullNews?id=1" class="read-more d-block mt-2">Посмотреть всю новость →</a>
+                        <a href="fullNews?id=1" class="read-more d-block mt-2">Посмотреть всю новость →</a>
                     </div>
                 </div>
             </div>
         </div>
+        </c:forEach>>
 
-        <!-- Новость 2 -->
-        <div class="col-md-4">
-            <div class="card news-card h-100">
-                <img src="https://images.unsplash.com/photo-1541336032412-2048a678540d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80"
-                     class="card-img-top news-image" alt="Культурное событие">
-                <div class="card-body d-flex flex-column">
-                    <span class="badge bg-primary mb-2 align-self-start">Культура</span>
-                    <h5 class="card-title">Открытие нового музея в Минске</h5>
-                    <p class="card-text flex-grow-1">В столице открылся современный музей истории Беларуси с интерактивными экспонатами и цифровыми технологиями.</p>
-                    <div class="mt-auto">
-                        <small class="text-muted">Опубликовано: 02.11.2025</small>
-                        <a href="/Controller/fullNews?id=2" class="read-more d-block mt-2">Посмотреть всю новость →</a>
-                    </div>
-                </div>
-            </div>
-        </div>
 
-        <!-- Новость 3 -->
-        <div class="col-md-4">
-            <div class="card news-card h-100">
-                <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80"
-                     class="card-img-top news-image" alt="Спортивное событие">
-                <div class="card-body d-flex flex-column">
-                    <span class="badge bg-danger mb-2 align-self-start">Спорт</span>
-                    <h5 class="card-title">Белорусские атлеты завоевали медали на международных соревнованиях</h5>
-                    <p class="card-text flex-grow-1">На чемпионате Европы по легкой атлетике белорусские спортсмены показали выдающиеся результаты, завоевав 3 золотые медали.</p>
-                    <div class="mt-auto">
-                        <small class="text-muted">Опубликовано: 01.11.2025</small>
-                        <a href="/Controller/fullNews?id=3" class="read-more d-block mt-2">Посмотреть всю новость →</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+
+
+<%--        <!-- Новость 2 -->--%>
+<%--        <div class="col-md-4">--%>
+<%--            <div class="card news-card h-100">--%>
+<%--                <img src="https://images.unsplash.com/photo-1541336032412-2048a678540d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80"--%>
+<%--                     class="card-img-top news-image" alt="Культурное событие">--%>
+<%--                <div class="card-body d-flex flex-column">--%>
+<%--                    <span class="badge bg-primary mb-2 align-self-start">Культура</span>--%>
+<%--                    <h5 class="card-title">Открытие нового музея в Минске</h5>--%>
+<%--                    <p class="card-text flex-grow-1">В столице открылся современный музей истории Беларуси с интерактивными экспонатами и цифровыми технологиями.</p>--%>
+<%--                    <div class="mt-auto">--%>
+<%--                        <small class="text-muted">Опубликовано: 02.11.2025</small>--%>
+<%--                        <a href="fullNews?id=2" class="read-more d-block mt-2">Посмотреть всю новость →</a>--%>
+<%--                    </div>--%>
+<%--                </div>--%>
+<%--            </div>--%>
+<%--        </div>--%>
+
+<%--        <!-- Новость 3 -->--%>
+<%--        <div class="col-md-4">--%>
+<%--            <div class="card news-card h-100">--%>
+<%--                <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80"--%>
+<%--                     class="card-img-top news-image" alt="Спортивное событие">--%>
+<%--                <div class="card-body d-flex flex-column">--%>
+<%--                    <span class="badge bg-danger mb-2 align-self-start">Спорт</span>--%>
+<%--                    <h5 class="card-title">Белорусские атлеты завоевали медали на международных соревнованиях</h5>--%>
+<%--                    <p class="card-text flex-grow-1">На чемпионате Европы по легкой атлетике белорусские спортсмены показали выдающиеся результаты, завоевав 3 золотые медали.</p>--%>
+<%--                    <div class="mt-auto">--%>
+<%--                        <small class="text-muted">Опубликовано: 01.11.2025</small>--%>
+<%--                        <a href="fullNews?id=3" class="read-more d-block mt-2">Посмотреть всю новость →</a>--%>
+<%--                    </div>--%>
+<%--                </div>--%>
+<%--            </div>--%>
+<%--        </div>--%>
+<%--    </div>--%>
 
     <!-- Дополнительные ссылки -->
     <div class="row mt-5">
         <div class="col-12 text-center">
-            <a href="/Controller/allNews" class="btn btn-success btn-lg">Все новости</a>
-            <a href="/Controller/categories" class="btn btn-outline-success btn-lg ms-3">Категории</a>
+            <a href="allNews" class="btn btn-success btn-lg">Все новости</a>
+            <a href="categories" class="btn btn-outline-success btn-lg ms-3">Категории</a>
         </div>
     </div>
 </main>
@@ -216,10 +226,10 @@
             <div class="col-md-4">
                 <h5>Быстрые ссылки</h5>
                 <ul class="list-unstyled">
-                    <li><a href="/Controller/home" class="text-white">Главная</a></li>
-                    <li><a href="/Controller/allNews" class="text-white">Все новости</a></li>
-                    <li><a href="/Controller/about" class="text-white">О нас</a></li>
-                    <li><a href="/Controller/contact" class="text-white">Контакты</a></li>
+                    <li><a href="home" class="text-white">Главная</a></li>
+                    <li><a href="allNews" class="text-white">Все новости</a></li>
+                    <li><a href="about" class="text-white">О нас</a></li>
+                    <li><a href="contact" class="text-white">Контакты</a></li>
                 </ul>
             </div>
             <div class="col-md-4">
@@ -237,8 +247,8 @@
                 <p>&copy; 2025 Новости Беларуси. Все права защищены.</p>
             </div>
             <div class="col-md-6 text-md-end">
-                <a href="/Controller/privacy" class="text-white me-3">Политика конфиденциальности</a>
-                <a href="/Controller/terms" class="text-white">Условия использования</a>
+                <a href="privacy" class="text-white me-3">Политика конфиденциальности</a>
+                <a href="terms" class="text-white">Условия использования</a>
             </div>
         </div>
     </div>

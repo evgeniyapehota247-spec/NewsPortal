@@ -137,9 +137,9 @@
                         🇷🇺 Русский
                     </button>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="/Controller/changeLanguage?lang=ru">🇷🇺 Русский</a></li>
-                        <li><a class="dropdown-item" href="/Controller/changeLanguage?lang=be">🇧🇾 Беларуская</a></li>
-                        <li><a class="dropdown-item" href="/Controller/changeLanguage?lang=en">🇺🇸 English</a></li>
+                        <li><a class="dropdown-item" href="changeLanguage?lang=ru">🇷🇺 Русский</a></li>
+                        <li><a class="dropdown-item" href="changeLanguage?lang=be">🇧🇾 Беларуская</a></li>
+                        <li><a class="dropdown-item" href="changeLanguage?lang=en">🇺🇸 English</a></li>
                     </ul>
                 </div>
             </div>
@@ -154,21 +154,21 @@
                              alt="Аватар" class="user-avatar me-2">
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="/Controller/profile">
+                        <li><a class="dropdown-item" href="profile">
                             <i class="fas fa-user me-2"></i>Мой профиль
                         </a></li>
-                        <li><a class="dropdown-item" href="/Controller/myNews">
+                        <li><a class="dropdown-item" href="myNews">
                             <i class="fas fa-newspaper me-2"></i>Мои новости
                         </a></li>
-                        <li><a class="dropdown-item" href="/Controller/favorites">
+                        <li><a class="dropdown-item" href="favorites">
                             <i class="fas fa-bookmark me-2"></i>Закладки
                         </a></li>
                         <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="/Controller/createNews">
+                        <li><a class="dropdown-item" href="createNews">
                             <i class="fas fa-plus me-2"></i>Создать новость
                         </a></li>
                         <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item text-danger" href="/Controller/logout">
+                        <li><a class="dropdown-item text-danger" href="logout">
                             <i class="fas fa-sign-out-alt me-2"></i>Выйти
                         </a></li>
                     </ul>
@@ -183,7 +183,7 @@
     <div class="container text-center">
         <h1 class="display-4 fw-bold mb-4">Добро пожаловать в личный кабинет!</h1>
         <p class="lead">Управляйте своими новостями и оставайтесь в курсе событий</p>
-        <a href="/Controller/createNews" class="btn btn-light btn-lg mt-3">
+        <a href="createNews" class="btn btn-light btn-lg mt-3">
             <i class="fas fa-plus me-2"></i>Создать новость
         </a>
     </div>
@@ -199,22 +199,22 @@
                     <h5 class="card-title">Быстрый доступ</h5>
                     <div class="row g-3">
                         <div class="col-md-3">
-                            <a href="/Controller/createNews" class="btn btn-success w-100">
+                            <a href="createNews" class="btn btn-success w-100">
                                 <i class="fas fa-plus me-2"></i>Новая запись
                             </a>
                         </div>
                         <div class="col-md-3">
-                            <a href="/Controller/myNews" class="btn btn-outline-success w-100">
+                            <a href="myNews" class="btn btn-outline-success w-100">
                                 <i class="fas fa-list me-2"></i>Мои новости
                             </a>
                         </div>
                         <div class="col-md-3">
-                            <a href="/Controller/favorites" class="btn btn-outline-primary w-100">
+                            <a href="favorites" class="btn btn-outline-primary w-100">
                                 <i class="fas fa-bookmark me-2"></i>Закладки
                             </a>
                         </div>
                         <div class="col-md-3">
-                            <a href="/Controller/profile" class="btn btn-outline-secondary w-100">
+                            <a href="profile" class="btn btn-outline-secondary w-100">
                                 <i class="fas fa-cog me-2"></i>Настройки
                             </a>
                         </div>
@@ -358,10 +358,10 @@
             <div class="col-md-4">
                 <h5>Быстрые ссылки</h5>
                 <ul class="list-unstyled">
-                    <li><a href="/Controller/home" class="text-white">Главная</a></li>
-                    <li><a href="/Controller/allNews" class="text-white">Все новости</a></li>
-                    <li><a href="/Controller/about" class="text-white">О нас</a></li>
-                    <li><a href="/Controller/contact" class="text-white">Контакты</a></li>
+                    <li><a href="home" class="text-white">Главная</a></li>
+                    <li><a href="allNews" class="text-white">Все новости</a></li>
+                    <li><a href="about" class="text-white">О нас</a></li>
+                    <li><a href="contact" class="text-white">Контакты</a></li>
                 </ul>
             </div>
             <div class="col-md-4">
@@ -379,8 +379,8 @@
                 <p>&copy; 2025 Новости Беларуси. Все права защищены.</p>
             </div>
             <div class="col-md-6 text-md-end">
-                <a href="/Controller/privacy" class="text-white me-3">Политика конфиденциальности</a>
-                <a href="/Controller/terms" class="text-white">Условия использования</a>
+                <a href="privacy" class="text-white me-3">Политика конфиденциальности</a>
+                <a href="terms" class="text-white">Условия использования</a>
             </div>
         </div>
     </div>

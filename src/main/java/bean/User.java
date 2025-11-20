@@ -4,36 +4,41 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Objects;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class User {
-
-    private String username;
+    
+    private Long id;
+    
+    private String email;
     private String password;
+    private String name;
+    private String rememberToken;
 
-
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                '}';
+    public User(String email, String password) {
+        this.email = email;
+        this.password = password;
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return Objects.equals(username, user.username) && Objects.equals(password, user.password);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(username, password);
-    }
+    //
+//    @Override
+//    public String toString() {
+//        return "User{" +
+//                "email='" + email + '\'' +
+//                ", password='" + password + '\'' +
+//                '}';
+//    }
+//
+//    @Override
+//    public boolean equals(Object o) {
+//        if (this == o) return true;
+//        if (o == null || getClass() != o.getClass()) return false;
+//        User user = (User) o;
+//        return Objects.equals(email, user.email) && Objects.equals(password, user.password);
+//    }
+//
+//    @Override
+//    public int hashCode() {
+//        return Objects.hash(email, password);
+//    }
 }

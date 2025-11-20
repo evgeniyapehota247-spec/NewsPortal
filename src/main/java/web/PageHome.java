@@ -5,7 +5,7 @@ import javax.servlet.http.*;
 import javax.servlet.annotation.*;
 import java.io.IOException;
 
-@WebServlet(name = "PageHome", value = {"", "/home"})//URL-адреса, которые обрабатывает сервлет
+@WebServlet(name = "PageHome", value = {"","/", "/home"})//URL-адреса, которые обрабатывает сервлет
 public class PageHome extends HttpServlet {
 
     @Override

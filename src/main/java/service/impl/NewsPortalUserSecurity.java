@@ -1,12 +1,19 @@
 package service.impl;
 
+import bean.RegistrationInfo;
 import bean.User;
+import dao.DaoException;
+import dao.DaoProvider;
+import dao.UserDao;
 import service.ServiceException;
 import service.UserSecurity;
 
+import java.sql.SQLException;
 import java.util.UUID;
 
 public class NewsPortalUserSecurity implements UserSecurity {
+
+    private final UserDao userDao = DaoProvider.getInstance().getUserDao();
 
     @Override
     public User signIn(String email, String password) throws ServiceException {
@@ -44,6 +51,17 @@ public class NewsPortalUserSecurity implements UserSecurity {
 //        userDao.update(user);
         System.out.println("Generated token for " + user.getEmail() + ": " + token);
         return token;
+    }
+
+    @Override
+    public boolean registration(RegistrationInfo info) throws ServiceException {
+        //Validation
+
+        try{
+            return userDao.registration(info);
+        }  catch (DaoException | SQLException e) {
+            throw new ServiceException(e);
+        }
     }
 
 //    @Override

@@ -3,53 +3,50 @@ package db;
 import java.sql.*;
 
 public class DBConfig {
+    private static final String URL = "jdbc:mysql://127.0.0.1:3306/portal?useSSL=false&serverTimezone=UTC";
+    private static final String USER = "root";
+    private static final String PASSWORD = "root";
 
-    public static void main(String[] args) throws ClassNotFoundException {
-
-        Class.forName("com.mysql.cj.jdbc.Driver");
-
-        Connection con = null;
-        Statement st = null;
-        ResultSet rs = null;
-
+    static {
         try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException("Драйвер MySQL не найден", e);
+        }
+    }
 
-            con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/portal?useSSL=false", "root", "root");
-            System.out.println("Connected to database");
+    public static Connection getConnection() throws SQLException {
+        return DriverManager.getConnection(URL, USER, PASSWORD);
+    }
 
-            st = con.createStatement();
+    public static boolean insertUser(String email, String password, String firstName, String lastName)
+            throws SQLException {
 
-            rs = st.executeQuery("select * from users");
+        String sql = "INSERT INTO users (email, password, lastname, firstname, role_id) VALUES (?, ?, ?, ?, 1)";
 
-            while (rs.next()) {
-                System.out.println(rs.getInt(1) + "\t"
-                        + rs.getString(2) + "\t"
-                        + rs.getString(3) + "\t"
-                        + rs.getString(4) + "\t"
-                        + rs.getString(5) + "\t");
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, email);
+            stmt.setString(2, password);
+            stmt.setString(3, lastName);
+            stmt.setString(4, firstName);
+
+            int rows = stmt.executeUpdate();
+            return rows > 0;
+        }
+    }
+
+    public static boolean isEmailExists(String email) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM users WHERE email = ?";
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, email);
+            try (ResultSet rs = stmt.executeQuery()) {
+                return rs.next() && rs.getInt(1) > 0;
             }
-//            String sql = "INSERT INTO `portal`.`users` (`email`, `password`, `surname`, `name`) " +
-//                    "VALUES " +
-//                    "('qqq@gmail.com', '123', 'QIvanov', 'QIvan')," +
-//                    "('zzz@gmail.com', '123', 'ZIvanov', 'ZIvan')";
-
-            String sql = "INSERT INTO `portal`.`users` (`email`, `password`, `surname`, `name`) " +
-                    "VALUES (?,?,?,?)";
-
-            PreparedStatement ps = con.prepareStatement(sql);
-
-            ps.setString(1, "2Ivanov");
-            ps.setString(2, "3Ivanov");
-            ps.setString(3, "4Ivanov");
-            ps.setString(4, "5Ivanov");
-
-            ps.executeUpdate();//save db
-
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } finally {
-
         }
     }
 }

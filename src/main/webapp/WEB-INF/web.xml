@@ -12,6 +12,11 @@
     <session-timeout>1</session-timeout>
   </session-config>
 
+  <!-- Listener ДОЛЖЕН быть первым! -->
+  <listener>
+    <listener-class>web.listeners.ConnectionPoolListener</listener-class>
+  </listener>
+
   <!-- Фильтр аутентификации через куки -->
   <filter>
     <filter-name>AuthCookieFilter</filter-name>

@@ -4,11 +4,16 @@ import bean.RegistrationInfo;
 import bean.User;
 import dao.DaoException;
 import dao.UserDao;
+import dao.pool.ConnectionPool;
 import db.DBConfig;
+import org.mindrot.jbcrypt.BCrypt;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 
 public class DBUserDao implements UserDao {
+
+    private final ConnectionPool pool = ConnectionPool.getInstance();
 
     @Override
     public User checkCredentials(String email, String password) throws DaoException {
@@ -17,19 +22,31 @@ public class DBUserDao implements UserDao {
 
     @Override
     public boolean registration(RegistrationInfo info) throws DaoException {
-        try {
+
+        try (Connection con = pool.takeConnection()) {
+
             // Проверяем не существует ли уже такой email
             if (DBConfig.isEmailExists(info.getEmail())) {
                 throw new SQLException("Пользователь с email '" + info.getEmail() + "' уже существует");
             }
 
+            String salt = BCrypt.gensalt();
+            String hashpsw = BCrypt.hashpw(info.getPassword(), salt);
+
+            System.out.println(salt);
+            System.out.println(hashpsw);
+
             // Вставляем пользователя
             boolean success = DBConfig.insertUser(
                     info.getEmail(),
-                    info.getPassword(), // В реальности должен быть хэш!
+                    hashpsw, // В реальности должен быть хэш!
                     info.getFirstName(),
                     info.getLastName()
             );
+
+            System.out.println(BCrypt.checkpw(info.getPassword(), hashpsw));
+            System.out.println(BCrypt.checkpw("1234qwer", hashpsw));
+
 
             if (success) {
                 System.out.println("✅ Пользователь зарегистрирован: " + info.getEmail());

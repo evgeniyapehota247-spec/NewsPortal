@@ -78,6 +78,14 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         }
 
+        .alert-success {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            border: 1px solid var(--belarus-green);
+            border-radius: 8px;
+            color: #155724;
+            padding: 12px 16px;
+        }
+
         .alert-error {
             background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
             border: 1px solid var(--belarus-red);
@@ -112,6 +120,21 @@
                             <p class="mb-0 mt-2">Неверный email или пароль. Пожалуйста, проверьте введенные данные и попробуйте снова.</p>
                         </div>
                     </c:if>
+
+                    <!-- Блок успешной регистрации -->
+                    <c:if test="${param.after_reg eq true}">
+                        <div class="alert-success mb-4">  <!-- Изменил класс на alert-success -->
+                            <div class="d-flex align-items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-check-circle-fill me-2" viewBox="0 0 16 16">
+                                    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+                                </svg>
+                                <strong>Регистрация прошла успешно!</strong>
+                            </div>
+                            <p class="mb-0 mt-2">Войдите с помощью нового логина и пароля</p>
+                        </div>
+                    </c:if>
+
+
 
 <%--                    сессия--%>
                     <c:if test="${not empty param.message}">

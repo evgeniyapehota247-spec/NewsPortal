@@ -1,5 +1,6 @@
 package service;
 
+import bean.RegistrationInfo;
 import bean.User;
 
 public interface UserSecurity {
@@ -12,4 +13,5 @@ public interface UserSecurity {
     // Метод для генерации токена "запомнить меня"
     String generateRememberToken(User user);
 
+    boolean registration(RegistrationInfo info) throws ServiceException;
 }

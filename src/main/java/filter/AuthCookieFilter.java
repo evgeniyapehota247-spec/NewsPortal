@@ -26,10 +26,21 @@ public class AuthCookieFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
 
+        // ⭐ ВАЖНО: Установи кодировку ПЕРВЫМ делом!
+        request.setCharacterEncoding("UTF-8");
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("text/html; charset=UTF-8");
+
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
 
         String path = httpRequest.getRequestURI().substring(httpRequest.getContextPath().length());
+
+        // ⭐ ВАЖНО: Пропускаем POST запросы на регистрацию без проверки авторизации
+        if (isPublicResource(path) || "POST".equals(httpRequest.getMethod())) {
+            chain.doFilter(request, response);
+            return;
+        }
 
         if (isPublicResource(path)) {
             chain.doFilter(request, response);//передача запроса дальше следующему фильтру или целевому сервлету

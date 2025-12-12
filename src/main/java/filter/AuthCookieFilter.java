@@ -26,7 +26,7 @@ public class AuthCookieFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
 
-        // ⭐ ВАЖНО: Установи кодировку ПЕРВЫМ делом!
+        // Установи кодировку ПЕРВЫМ делом!
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
         response.setContentType("text/html; charset=UTF-8");
@@ -36,7 +36,7 @@ public class AuthCookieFilter implements Filter {
 
         String path = httpRequest.getRequestURI().substring(httpRequest.getContextPath().length());
 
-        // ⭐ ВАЖНО: Пропускаем POST запросы на регистрацию без проверки авторизации
+        //ВАЖНО: Пропускаем POST запросы на регистрацию без проверки авторизации
         if (isPublicResource(path) || "POST".equals(httpRequest.getMethod())) {
             chain.doFilter(request, response);
             return;
@@ -69,17 +69,13 @@ public class AuthCookieFilter implements Filter {
 
                 // Пользователь не аутентифицирован - перенаправляем на логин
                 httpResponse.sendRedirect(httpRequest.getContextPath() +
-                        "/login?message="  + encodedMessage);
+                        "/login?message=" + encodedMessage);
                 return;
             }
         }
-
         chain.doFilter(request, response);
     }
 
-    /**
-     * Получает пользователя из куки
-     */
     private User getUserFromCookies(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
         if (cookies == null) return null;
@@ -101,7 +97,6 @@ public class AuthCookieFilter implements Filter {
         if (userEmail != null && rememberToken != null) {
             return userSecurity.authenticateByToken(userEmail, rememberToken);
         }
-
         return null;
     }
 
@@ -109,7 +104,7 @@ public class AuthCookieFilter implements Filter {
         return path.equals("/") ||
                 path.equals("/home") ||
                 path.equals("/login") ||
-                path.equals("/register") ;
+                path.equals("/register");
     }
 
     @Override

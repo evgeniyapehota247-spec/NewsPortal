@@ -35,7 +35,7 @@
         .register-container {
             background: white;
             border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             overflow: hidden;
         }
 
@@ -74,7 +74,7 @@
 
         .btn-register:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         }
 
         .password-strength {
@@ -84,9 +84,20 @@
             transition: all 0.3s ease;
         }
 
-        .strength-weak { background-color: #dc3545; width: 25%; }
-        .strength-medium { background-color: #ffc107; width: 50%; }
-        .strength-strong { background-color: #28a745; width: 100%; }
+        .strength-weak {
+            background-color: #dc3545;
+            width: 25%;
+        }
+
+        .strength-medium {
+            background-color: #ffc107;
+            width: 50%;
+        }
+
+        .strength-strong {
+            background-color: #28a745;
+            width: 100%;
+        }
 
         .alert-error {
             background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
@@ -135,7 +146,8 @@
                     <c:if test="${not empty error}">
                         <div class="alert-error">
                             <div class="d-flex align-items-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-exclamation-triangle-fill me-2" viewBox="0 0 16 16">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                                     class="bi bi-exclamation-triangle-fill me-2" viewBox="0 0 16 16">
                                     <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
                                 </svg>
                                 <strong>Ошибка регистрации</strong>
@@ -188,6 +200,17 @@
                                     <div class="invalid-feedback">${lastNameError}</div>
                                 </c:if>
                             </div>
+                        </div>
+
+                        <!-- Date of Birthday -->
+                        <div class="form-group">
+                            <label for="dob">Дата рождения:</label>
+                            <input type="date" class="form-control" id="dob" name="dob"
+                                   value="${not empty dob ? dob : ''}"
+                                   pattern="\d{4}-\d{2}-\d{2}">
+                            <c:if test="${not empty dobError}">
+                                <small class="text-danger">${dobError}</small>
+                            </c:if>
                         </div>
 
                         <!-- Email -->
@@ -267,7 +290,8 @@
                         </div>
 
                         <!-- Кнопка регистрации -->
-                        <button type="submit" class="btn btn-register w-100 mb-3" id="submitBtn">Создать аккаунт</button>
+                        <button type="submit" class="btn btn-register w-100 mb-3" id="submitBtn">Создать аккаунт
+                        </button>
 
                         <!-- Ссылка на вход -->
                         <div class="text-center">
@@ -385,7 +409,7 @@
     }
 
     // Восстановление ошибок после загрузки страницы
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         // Автоматически проверяем пароли если они уже введены
         const password = document.getElementById('password').value;
         const confirmPassword = document.getElementById('confirmPassword').value;

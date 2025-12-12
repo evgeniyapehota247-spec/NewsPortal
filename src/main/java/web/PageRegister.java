@@ -1,6 +1,7 @@
 package web;
 
-import bean.RegistrationInfo;
+import bean.User;
+import bean.UserDetails;
 import service.ServiceException;
 import service.ServiceProvider;
 import service.UserSecurity;
@@ -11,11 +12,17 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 @WebServlet("/register")
 public class PageRegister extends HttpServlet {
 
     private final UserSecurity userSecurity = ServiceProvider.getInstance().getUserSecurity();
+
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -32,17 +39,54 @@ public class PageRegister extends HttpServlet {
         request.setAttribute("firstName", request.getParameter("firstName"));
         request.setAttribute("lastName", request.getParameter("lastName"));
         request.setAttribute("email", request.getParameter("email"));
-
-        RegistrationInfo.RegBuilder builder = new RegistrationInfo.RegBuilder();
-        builder.firstName(request.getParameter("firstName"))
-                .lastName(request.getParameter("lastName"))
-                .email(request.getParameter("email"))
-                .password(request.getParameter("password"));
-
-        RegistrationInfo registrationInfo = builder.build();
+        request.setAttribute("dob", request.getParameter("dob"));
 
         try {
-            boolean success = userSecurity.registration(registrationInfo);
+            // Создаем объект User
+            User user = new User();
+            user.setEmail(request.getParameter("email"));
+            user.setPassword(request.getParameter("password"));
+
+            // Устанавливаем значения по умолчанию
+            user.setUserStatusId(1); // Например, 1 = активный
+            user.setRoleId(2); // Например, 2 = обычный пользователь
+
+            user.setCreatedAt(LocalDateTime.now());
+            user.setUpdatedAt(LocalDateTime.now());
+
+            // Создаем объект UserDetails
+            UserDetails userDetails = new UserDetails();
+            userDetails.setFirstName(request.getParameter("firstName"));
+            userDetails.setLastName(request.getParameter("lastName"));
+
+            // Парсим дату рождения
+            String dobParam = request.getParameter("dob");
+            if (dobParam != null && !dobParam.trim().isEmpty()) {
+                try {
+                    LocalDate dob = LocalDate.parse(dobParam.trim(), DATE_FORMATTER);
+
+                    // Дополнительная проверка на корректность даты
+                    LocalDate now = LocalDate.now();
+                    if (dob.isAfter(now)) {
+                        request.setAttribute("error", "Дата рождения не может быть в будущем");
+                        request.setAttribute("dobError", "Выберите корректную дату");
+                        request.getRequestDispatcher("/WEB-INF/jsp/register.jsp").forward(request, response);
+                        return;
+                    }
+                    userDetails.setDob(dob);
+
+                } catch (DateTimeParseException e) {
+                    request.setAttribute("error", "Неверный формат даты рождения. Используйте ГГГГ-ММ-ДД");
+                    request.setAttribute("dobError", "Используйте формат: ГГГГ-ММ-ДД");
+                    request.getRequestDispatcher("/WEB-INF/jsp/register.jsp").forward(request, response);
+                    return;
+                }
+            }
+
+            // Связываем User и UserDetails
+            user.setUserDetails(userDetails);
+
+            boolean success = userSecurity.registration(user);
 
             if (success) {
                 response.sendRedirect(request.getContextPath() + "/login?after_reg=true");
@@ -67,10 +111,18 @@ public class PageRegister extends HttpServlet {
                 request.setAttribute("error", "Неверно указано имя или фамилия");
                 request.setAttribute("firstNameError", "Проверьте правильность имени");
                 request.setAttribute("lastNameError", "Проверьте правильность фамилии");
+            } else if (errorMessage.contains("дата") || errorMessage.contains("dob") || errorMessage.contains("возраст")) {
+                request.setAttribute("error", "Неверная дата рождения");
+                request.setAttribute("dobError", "Проверьте правильность даты рождения");
             } else {
                 request.setAttribute("error", "Ошибка регистрации: " + errorMessage);
             }
 
+            request.getRequestDispatcher("/WEB-INF/jsp/register.jsp").forward(request, response);
+
+        } catch (Exception e) {
+            // Общая ошибка
+            request.setAttribute("error", "Произошла ошибка: " + e.getMessage());
             request.getRequestDispatcher("/WEB-INF/jsp/register.jsp").forward(request, response);
         }
     }

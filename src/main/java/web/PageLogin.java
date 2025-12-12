@@ -50,7 +50,8 @@ public class PageLogin extends HttpServlet {
             session.setAttribute("auth", user);
 
             // Если выбрано "Запомнить меня", создаем куки
-            if ("on".equals(remember)) { //"on" - стандартное значение, которое браузер отправляет для отмеченных чекбоксов
+            if ("on".equals(remember)) {
+                //"on" - стандартное значение, которое браузер отправляет для отмеченных чекбоксов
                 String rememberToken = userSecurity.generateRememberToken(user);
 
                 // Создаем куки на 30 дней
@@ -71,7 +72,7 @@ public class PageLogin extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/userHome");
 
         } catch (ServiceException e) {
-            response.sendRedirect("error.jsp");
+            response.sendRedirect(request.getContextPath() + "/login?authError=true");
         }
     }
 }

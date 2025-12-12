@@ -1,14 +1,17 @@
 package dao;
 
-import bean.RegistrationInfo;
 import bean.User;
-
-import java.sql.SQLException;
 
 public interface UserDao {
 
-    User checkCredentials(String email, String password) throws DaoException;
+    User findByEmail(String email) throws DaoException;
 
-    boolean registration(RegistrationInfo info) throws DaoException, SQLException;
+    boolean create(User user) throws DaoException;
+
+    boolean checkPassword(String email, String password) throws DaoException;
+
+    void saveRememberToken(int userId, String token) throws DaoException;
+
+    String getRememberToken(int userId) throws DaoException;
 
 }

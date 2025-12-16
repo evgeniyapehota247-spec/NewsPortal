@@ -105,6 +105,35 @@
             padding: 80px 0;
             margin-bottom: 40px;
         }
+
+        .pagination .page-link {
+            color: var(--belarus-green);
+        }
+
+        .pagination .page-item.active .page-link {
+            background-color: var(--belarus-green);
+            border-color: var(--belarus-green);
+            color: white;
+        }
+
+        .pagination-info {
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 20px 0;
+            border-left: 4px solid var(--belarus-green);
+        }
+
+        .badge-category {
+            font-size: 0.8em;
+            padding: 5px 10px;
+        }
+
+        .news-counter {
+            font-size: 0.9em;
+            color: #6c757d;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
@@ -126,7 +155,6 @@
                         <li><a class="dropdown-item" href="changeLanguage?lang=en">🇺🇸 English</a></li>
                     </ul>
                 </div>
-                </div>
             </div>
 
             <!-- Кнопки входа и регистрации -->
@@ -141,75 +169,180 @@
     <div class="container text-center">
         <h1 class="display-4 fw-bold mb-4">Последние новости Беларуси</h1>
         <p class="lead">Будьте в курсе самых важных событий страны</p>
+
+        <!-- Информация о пагинации -->
+        <c:if test="${not empty requestScope.topNews}">
+            <div class="mt-4 bg-white bg-opacity-25 p-3 rounded d-inline-block">
+                <p class="mb-0">
+                    Страница <strong>${requestScope.currentPage}</strong> из <strong>${requestScope.totalPages}</strong>
+                    | Новости <strong>${requestScope.startNews}-${requestScope.endNews}</strong> из <strong>${requestScope.totalNewsCount}</strong>
+                </p>
+            </div>
+        </c:if>
     </div>
 </section>
 
 <!-- Основной контент -->
 <main class="container">
+
+    <!-- Информация о текущей странице -->
+    <div class="pagination-info">
+        <h4>Последние новости</h4>
+        <c:if test="${not empty requestScope.topNews}">
+            <p class="mb-0">
+                Показано <strong>${requestScope.topNews.size()}</strong> новостей на странице
+                <span class="float-end">
+                    <a href="allNews" class="btn btn-sm btn-outline-success">Все новости (${requestScope.totalNewsCount})</a>
+                </span>
+            </p>
+        </c:if>
+    </div>
+
+    <!-- Список новостей -->
     <div class="row g-4">
+        <c:choose>
+            <c:when test="${not empty requestScope.topNews}">
+                <c:forEach var="news" items="${requestScope.topNews}" varStatus="status">
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card news-card h-100">
+                            <img src="https://images.unsplash.com/photo-1589652717521-10c0d092dea9?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80"
+                                 class="card-img-top news-image" alt="Новость Беларуси">
+                            <div class="card-body d-flex flex-column">
+                                <!-- Категория -->
+                                <c:choose>
+                                    <c:when test="${status.index % 3 == 0}">
+                                        <span class="badge bg-success mb-2 align-self-start badge-category">Экономика</span>
+                                    </c:when>
+                                    <c:when test="${status.index % 3 == 1}">
+                                        <span class="badge bg-primary mb-2 align-self-start badge-category">Культура</span>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <span class="badge bg-danger mb-2 align-self-start badge-category">Спорт</span>
+                                    </c:otherwise>
+                                </c:choose>
 
+                                <!-- Счетчик новости -->
+                                <div class="news-counter">
+                                    Новость #${(requestScope.currentPage - 1) * requestScope.pageSize + status.index + 1}
+                                </div>
 
-        <c:forEach var="news" items="${requestScope.topNews}">
-        <!-- Новость 1 -->
-        <div class="col-md-4">
-            <div class="card news-card h-100">
-                <img src="https://images.unsplash.com/photo-1589652717521-10c0d092dea9?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80"
-                     class="card-img-top news-image" alt="Экономика Беларуси">
-                <div class="card-body d-flex flex-column">
-                    <span class="badge bg-success mb-2 align-self-start">Экономика</span>
-                    <h5 class="card-title">${news.title}</h5>
-                    <p class="card-text flex-grow-1">${news.brief}</p>
-                    <div class="mt-auto">
-                        <small class="text-muted">Опубликовано: 03.11.2025</small>
-                        <a href="fullNews?id=1" class="read-more d-block mt-2">Посмотреть всю новость →</a>
+                                <!-- Заголовок и краткое описание -->
+                                <h5 class="card-title">${news.title}</h5>
+                                <p class="card-text flex-grow-1">${news.brief}</p>
+
+                                <!-- Дата и ссылка -->
+                                <div class="mt-auto">
+                                    <small class="text-muted">Опубликовано:
+                                        <c:set var="daysAgo" value="${(requestScope.totalNewsCount - (status.index + (requestScope.currentPage - 1) * requestScope.pageSize)) % 30 + 1}" />
+                                        0${daysAgo}.11.2025
+                                    </small>
+                                    <a href="fullNews?id=${news.id}" class="read-more d-block mt-2">Читать полностью →</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </c:forEach>
+            </c:when>
+            <c:otherwise>
+                <div class="col-12">
+                    <div class="alert alert-info text-center">
+                        <h4>Новости не найдены</h4>
+                        <p>В данный момент нет доступных новостей.</p>
                     </div>
                 </div>
+            </c:otherwise>
+        </c:choose>
+    </div>
+
+    <!-- Пагинация -->
+    <c:if test="${requestScope.totalPages > 1}">
+        <nav aria-label="Навигация по страницам" class="mt-5">
+            <ul class="pagination justify-content-center">
+                <!-- Кнопка "Первая" -->
+                <c:if test="${requestScope.currentPage > 1}">
+                    <li class="page-item">
+                        <a class="page-link" href="home?page=1" aria-label="Первая">
+                            <span aria-hidden="true">&laquo;&laquo;</span>
+                        </a>
+                    </li>
+                </c:if>
+
+                <!-- Кнопка "Назад" -->
+                <c:if test="${requestScope.currentPage > 1}">
+                    <li class="page-item">
+                        <a class="page-link" href="home?page=${requestScope.currentPage - 1}" aria-label="Предыдущая">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                </c:if>
+
+                <!-- Номера страниц -->
+                <c:forEach var="i" begin="1" end="${requestScope.totalPages}">
+                    <c:choose>
+                        <c:when test="${i == requestScope.currentPage}">
+                            <li class="page-item active">
+                                <span class="page-link">${i}</span>
+                            </li>
+                        </c:when>
+                        <c:when test="${i <= 3 || i >= requestScope.totalPages - 2 ||
+                                       (i >= requestScope.currentPage - 2 && i <= requestScope.currentPage + 2)}">
+                            <li class="page-item">
+                                <a class="page-link" href="home?page=${i}">${i}</a>
+                            </li>
+                        </c:when>
+                        <c:when test="${i == 4 && requestScope.totalPages > 7}">
+                            <li class="page-item disabled">
+                                <span class="page-link">...</span>
+                            </li>
+                        </c:when>
+                        <c:when test="${i == requestScope.totalPages - 3 && requestScope.totalPages > 7}">
+                            <li class="page-item disabled">
+                                <span class="page-link">...</span>
+                            </li>
+                        </c:when>
+                    </c:choose>
+                </c:forEach>
+
+                <!-- Кнопка "Вперед" -->
+                <c:if test="${requestScope.currentPage < requestScope.totalPages}">
+                    <li class="page-item">
+                        <a class="page-link" href="home?page=${requestScope.currentPage + 1}" aria-label="Следующая">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </c:if>
+
+                <!-- Кнопка "Последняя" -->
+                <c:if test="${requestScope.currentPage < requestScope.totalPages}">
+                    <li class="page-item">
+                        <a class="page-link" href="home?page=${requestScope.totalPages}" aria-label="Последняя">
+                            <span aria-hidden="true">&raquo;&raquo;</span>
+                        </a>
+                    </li>
+                </c:if>
+            </ul>
+
+            <!-- Быстрая навигация -->
+            <div class="text-center mt-3">
+                <small class="text-muted me-3">Перейти:</small>
+                <div class="btn-group btn-group-sm" role="group">
+                    <c:forEach var="quickPage" begin="1" end="${requestScope.totalPages}">
+                        <c:if test="${quickPage <= 5 || quickPage >= requestScope.totalPages - 4}">
+                            <a href="home?page=${quickPage}"
+                               class="btn btn-outline-success ${quickPage == requestScope.currentPage ? 'active' : ''}">
+                                    ${quickPage}
+                            </a>
+                        </c:if>
+                    </c:forEach>
+                </div>
             </div>
-        </div>
-        </c:forEach>
-
-
-
-
-<%--        <!-- Новость 2 -->--%>
-<%--        <div class="col-md-4">--%>
-<%--            <div class="card news-card h-100">--%>
-<%--                <img src="https://images.unsplash.com/photo-1541336032412-2048a678540d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80"--%>
-<%--                     class="card-img-top news-image" alt="Культурное событие">--%>
-<%--                <div class="card-body d-flex flex-column">--%>
-<%--                    <span class="badge bg-primary mb-2 align-self-start">Культура</span>--%>
-<%--                    <h5 class="card-title">Открытие нового музея в Минске</h5>--%>
-<%--                    <p class="card-text flex-grow-1">В столице открылся современный музей истории Беларуси с интерактивными экспонатами и цифровыми технологиями.</p>--%>
-<%--                    <div class="mt-auto">--%>
-<%--                        <small class="text-muted">Опубликовано: 02.11.2025</small>--%>
-<%--                        <a href="fullNews?id=2" class="read-more d-block mt-2">Посмотреть всю новость →</a>--%>
-<%--                    </div>--%>
-<%--                </div>--%>
-<%--            </div>--%>
-<%--        </div>--%>
-
-<%--        <!-- Новость 3 -->--%>
-<%--        <div class="col-md-4">--%>
-<%--            <div class="card news-card h-100">--%>
-<%--                <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80"--%>
-<%--                     class="card-img-top news-image" alt="Спортивное событие">--%>
-<%--                <div class="card-body d-flex flex-column">--%>
-<%--                    <span class="badge bg-danger mb-2 align-self-start">Спорт</span>--%>
-<%--                    <h5 class="card-title">Белорусские атлеты завоевали медали на международных соревнованиях</h5>--%>
-<%--                    <p class="card-text flex-grow-1">На чемпионате Европы по легкой атлетике белорусские спортсмены показали выдающиеся результаты, завоевав 3 золотые медали.</p>--%>
-<%--                    <div class="mt-auto">--%>
-<%--                        <small class="text-muted">Опубликовано: 01.11.2025</small>--%>
-<%--                        <a href="fullNews?id=3" class="read-more d-block mt-2">Посмотреть всю новость →</a>--%>
-<%--                    </div>--%>
-<%--                </div>--%>
-<%--            </div>--%>
-<%--        </div>--%>
-<%--    </div>--%>
+        </nav>
+    </c:if>
 
     <!-- Дополнительные ссылки -->
     <div class="row mt-5">
         <div class="col-12 text-center">
-            <a href="allNews" class="btn btn-success btn-lg">Все новости</a>
+            <a href="allNews" class="btn btn-success btn-lg">Все новости (${requestScope.totalNewsCount})</a>
             <a href="categories" class="btn btn-outline-success btn-lg ms-3">Категории</a>
         </div>
     </div>

@@ -1,3 +1,4 @@
+// PageAllNews.java
 package web;
 
 import bean.News;
@@ -14,19 +15,15 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet(name = "PageHome", value = {"", "/", "/home"})
-public class PageHome extends HttpServlet {
+@WebServlet(name = "PageAllNews", value = "/allNews")
+public class PageAllNews extends HttpServlet {
 
     private final NewsService newsService = ServiceProvider.getInstance().getNewsService();
-    private static final int PAGE_SIZE = 3; // 10 новостей на главной странице
+    private static final int PAGE_SIZE = 10; // Новостей на странице
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        // Устанавливаем атрибуты для JSP
-        request.setAttribute("pageTitle", "Новости Беларуси");
-        request.setAttribute("welcomeMessage", "Добро пожаловать на наш портал!");
 
         try {
             // Получаем номер страницы из параметра
@@ -45,7 +42,6 @@ public class PageHome extends HttpServlet {
             // Получаем новости для текущей страницы
             List<News> news = newsService.findAllNews(currentPage, PAGE_SIZE);
             int totalPages = newsService.getTotalPages(PAGE_SIZE);
-            int totalNewsCount = newsService.getTotalNewsCount();
 
             // Проверяем, что текущая страница не больше общего количества
             if (currentPage > totalPages && totalPages > 0) {
@@ -53,31 +49,18 @@ public class PageHome extends HttpServlet {
                 news = newsService.findAllNews(currentPage, PAGE_SIZE);
             }
 
-            // Устанавливаем атрибуты для пагинации
-            request.setAttribute("topNews", news);
+            // Устанавливаем атрибуты
+            request.setAttribute("newsList", news);
             request.setAttribute("currentPage", currentPage);
             request.setAttribute("totalPages", totalPages);
             request.setAttribute("pageSize", PAGE_SIZE);
-            request.setAttribute("totalNewsCount", totalNewsCount);
-
-            // Вычисляем диапазон отображаемых новостей
-            int startNews = (currentPage - 1) * PAGE_SIZE + 1;
-            int endNews = Math.min(currentPage * PAGE_SIZE, totalNewsCount);
-            request.setAttribute("startNews", startNews);
-            request.setAttribute("endNews", endNews);
 
             // Перенаправляем на JSP
-            RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/main.jsp");
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/allNews.jsp");
             dispatcher.forward(request, response);
 
         } catch (ServiceException e) {
-            throw new RuntimeException(e);
+            throw new ServletException("Error loading news", e);
         }
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        doGet(request, response);
     }
 }

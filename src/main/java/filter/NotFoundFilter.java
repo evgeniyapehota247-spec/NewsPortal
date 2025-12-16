@@ -17,6 +17,7 @@ public class NotFoundFilter implements Filter {
         // Добавьте ВСЕ ваши реальные сервлеты и пути JSP
         existingPaths.add("/");
         existingPaths.add("/home");
+        existingPaths.add("/allNews") ;  // Добавляем наш новый путь
         existingPaths.add("/login");
         existingPaths.add("/register");
         existingPaths.add("/logout");

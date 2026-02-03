@@ -24,6 +24,13 @@ public class NotFoundFilter implements Filter {
         existingPaths.add("/userHome");
         existingPaths.add("/createNews");
         existingPaths.add("/myNews");
+        existingPaths.add("/viewNews");
+        existingPaths.add("/editNews");
+        existingPaths.add("/deleteNews");
+
+
+
+
 
         System.out.println("===== NotFoundFilter ИНИЦИАЛИЗИРОВАН =====");
         System.out.println("Зарегистрированные пути: " + existingPaths);

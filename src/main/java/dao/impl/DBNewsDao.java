@@ -219,20 +219,32 @@ public class DBNewsDao implements NewsDao {
 
     @Override
     public void update(News news) throws DaoException {
+        System.out.println("Updating news with ID: " + news.getId());
+        System.out.println("Title: " + news.getTitle());
+        System.out.println("Status: " + news.getNews_status_id());
+        System.out.println("Publish date: " + news.getPublish_date());
+
         try (Connection con = ConnectionPool.getInstance().takeConnection();
              PreparedStatement ps = con.prepareStatement(UPDATE)) {
 
             ps.setString(1, news.getTitle());
             ps.setString(2, news.getBrief());
-            ps.setString(3, news.getContent_path()); // или news.getContentPath()
+            ps.setString(3, news.getContent_path());
             ps.setInt(4, news.getNews_status_id());
-            ps.setTimestamp(5, news.getPublish_date() != null ?
-                    Timestamp.valueOf(news.getPublish_date()) : null);
+
+            if (news.getPublish_date() != null) {
+                ps.setTimestamp(5, Timestamp.valueOf(news.getPublish_date()));
+            } else {
+                ps.setNull(5, Types.TIMESTAMP);
+            }
+
             ps.setInt(6, news.getId());
 
-            ps.executeUpdate();
+            int rowsUpdated = ps.executeUpdate();
+            System.out.println("Rows updated: " + rowsUpdated);
 
         } catch (SQLException e) {
+            System.err.println("Error updating news: " + e.getMessage());
             throw new DaoException(e);
         }
     }

@@ -154,15 +154,19 @@
                                 </div>
                             </div>
 
+                                <%-- Вместо JavaScript функции используйте прямую ссылку --%>
                             <div class="card-footer bg-transparent">
                                 <div class="btn-group w-100">
                                     <a href="createNews?edit=${news.id}" class="btn btn-outline-primary btn-sm">
                                         <i class="fas fa-edit"></i> Редактировать
                                     </a>
+                                    <a href="viewNews?id=${news.id}" class="btn btn-outline-info btn-sm" target="_blank">
+                                        <i class="fas fa-eye"></i> Просмотр
+                                    </a>
                                     <a href="deleteNews?id=${news.id}"
                                        class="btn btn-outline-danger btn-sm"
-                                       onclick="return confirm('Удалить новость?')">
-                                        <i class="fas fa-trash"></i> Удалить
+                                       onclick="return confirm('Удалить новость \"${news.title}\"?')">
+                                    <i class="fas fa-trash"></i> Удалить
                                     </a>
                                 </div>
                             </div>
@@ -180,6 +184,14 @@
         </a>
     </div>
 </div>
+
+
+<%-- Добавьте скрипт для предпросмотра --%>
+<script>
+    function previewNews(newsId) {
+        window.open('viewNews?id=' + newsId, '_blank');
+    }
+</script>
 
 <%-- Font Awesome для иконок --%>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>

@@ -15,12 +15,13 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @WebServlet(name = "PageCreateNews", value = "/createNews")
 public class PageCreateNews extends HttpServlet {
 
-
     private final NewsService newsService = ServiceProvider.getInstance().getNewsService();
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -32,6 +33,8 @@ public class PageCreateNews extends HttpServlet {
             return;
         }
 
+        User user = (User) session.getAttribute("auth");
+
         // Проверяем, редактируем ли существующую новость
         String editId = request.getParameter("edit");
         if (editId != null && !editId.isEmpty()) {
@@ -39,17 +42,29 @@ public class PageCreateNews extends HttpServlet {
                 int id = Integer.parseInt(editId);
                 News news = newsService.getById(id);
 
-                // Проверяем права доступа
-                User user = (User) session.getAttribute("auth");
-                if (news.getAuthor_id() != user.getId() && user.getRoleId() != 2) { // 2 - админ
-                    response.sendRedirect(request.getContextPath() + "/myNews?error=No permission");
+                if (news == null) {
+                    response.sendRedirect(request.getContextPath() + "/myNews?error=News not found");
                     return;
+                }
+
+                // Проверяем права доступа - только автор или админ могут редактировать
+                if (news.getAuthor_id() != user.getId() && user.getRoleId() != 2) { // 2 - админ
+                    response.sendRedirect(request.getContextPath() + "/myNews?error=No permission to edit this news");
+                    return;
+                }
+
+                // Форматируем дату для input type="date"
+                if (news.getPublish_date() != null) {
+                    String formattedDate = news.getPublish_date().format(DATE_FORMATTER);
+                    request.setAttribute("formattedPublishDate", formattedDate);
                 }
 
                 request.setAttribute("news", news);
                 request.setAttribute("isEdit", true);
+
             } catch (ServiceException | NumberFormatException e) {
-                // Продолжаем как создание новой новости
+                response.sendRedirect(request.getContextPath() + "/myNews?error=Error loading news for edit");
+                return;
             }
         }
 
@@ -75,7 +90,7 @@ public class PageCreateNews extends HttpServlet {
             String brief = request.getParameter("brief");
             String content = request.getParameter("content");
             String status = request.getParameter("status");
-            String publishDate = request.getParameter("publish_date");
+            String publishDateStr = request.getParameter("publish_date");
 
             // Валидация
             if (title == null || title.trim().isEmpty() ||
@@ -85,6 +100,8 @@ public class PageCreateNews extends HttpServlet {
                 request.setAttribute("title", title);
                 request.setAttribute("brief", brief);
                 request.setAttribute("content", content);
+                request.setAttribute("publish_date", publishDateStr);
+                request.setAttribute("status", status);
 
                 RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/createNews.jsp");
                 dispatcher.forward(request, response);
@@ -99,9 +116,14 @@ public class PageCreateNews extends HttpServlet {
                 int id = Integer.parseInt(idParam);
                 news = newsService.getById(id);
 
+                if (news == null) {
+                    response.sendRedirect(request.getContextPath() + "/myNews?error=News not found");
+                    return;
+                }
+
                 // Проверяем права доступа
                 if (news.getAuthor_id() != user.getId() && user.getRoleId() != 2) {
-                    response.sendRedirect(request.getContextPath() + "/myNews?error=No permission");
+                    response.sendRedirect(request.getContextPath() + "/myNews?error=No permission to edit this news");
                     return;
                 }
 
@@ -110,11 +132,11 @@ public class PageCreateNews extends HttpServlet {
                 // Создание новой новости
                 news = new News();
                 news.setAuthor_id(user.getId());
-//                news.setAuthor_name(user.getFirstname() + " " + user.getLastname()); // Добавьте эту строку
                 news.setCreated_at(LocalDateTime.now());
+//                news.setAuthor_name(user.getFirstname() + " " + user.getLastname());
             }
 
-            // Заполняем данные
+            // Заполняем/обновляем данные
             news.setTitle(title.trim());
             news.setBrief(brief.trim());
             news.setContent_path(content != null ? content.trim() : "");
@@ -124,13 +146,19 @@ public class PageCreateNews extends HttpServlet {
             news.setNews_status_id(statusId);
 
             // Дата публикации
-            if (publishDate != null && !publishDate.isEmpty()) {
-                LocalDateTime publishDateTime = LocalDateTime.parse(publishDate + "T00:00:00");
-                news.setPublish_date(publishDateTime);
+            LocalDateTime publishDate = null;
+            if (publishDateStr != null && !publishDateStr.isEmpty()) {
+                try {
+                    publishDate = LocalDateTime.parse(publishDateStr + "T00:00:00");
+                } catch (Exception e) {
+                    // Если не удалось распарсить, используем текущую дату
+                    publishDate = LocalDateTime.now();
+                }
             } else if (statusId == 2) {
                 // Если публикуем сейчас, устанавливаем текущую дату
-                news.setPublish_date(LocalDateTime.now());
+                publishDate = LocalDateTime.now();
             }
+            news.setPublish_date(publishDate);
 
             news.setUpdated_at(LocalDateTime.now());
 

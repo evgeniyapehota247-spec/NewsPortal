@@ -133,7 +133,6 @@ public class PageCreateNews extends HttpServlet {
                 news = new News();
                 news.setAuthor_id(user.getId());
                 news.setCreated_at(LocalDateTime.now());
-//                news.setAuthor_name(user.getFirstname() + " " + user.getLastname());
             }
 
             // Заполняем/обновляем данные
@@ -162,7 +161,6 @@ public class PageCreateNews extends HttpServlet {
 
             news.setUpdated_at(LocalDateTime.now());
 
-            // Сохраняем или обновляем
             if (isEdit) {
                 newsService.update(news);
                 response.sendRedirect(request.getContextPath() + "/myNews?success=News updated successfully");

@@ -58,7 +58,6 @@ public class NewsServiceImpl implements NewsService {
     public List<News> getAll() throws ServiceException {
         try {
             // Возвращаем все новости (без пагинации)
-            // Если в DAO нет метода findAll(), создайте его или используйте существующий
             return newsDao.findAll(0, Integer.MAX_VALUE);
         } catch (DaoException e) {
             throw new ServiceException(e);
@@ -140,11 +139,7 @@ public class NewsServiceImpl implements NewsService {
         }
     }
 
-    // Дополнительные методы для удобства
-
-    /**
-     * Получить опубликованные новости автора
-     */
+    //Получить опубликованные новости
     public List<News> findPublishedByAuthor(int authorId) throws ServiceException {
         try {
             List<News> authorNews = newsDao.findByAuthorId(authorId);
@@ -157,9 +152,7 @@ public class NewsServiceImpl implements NewsService {
         }
     }
 
-    /**
-     * Получить черновики автора
-     */
+    // Получить черновики автора
     public List<News> findDraftsByAuthor(int authorId) throws ServiceException {
         try {
             List<News> authorNews = newsDao.findByAuthorId(authorId);
@@ -172,9 +165,7 @@ public class NewsServiceImpl implements NewsService {
         }
     }
 
-    /**
-     * Получить общее количество новостей автора
-     */
+    //Получить общее количество новостей
     public int getCountByAuthor(int authorId) throws ServiceException {
         try {
             List<News> authorNews = newsDao.findByAuthorId(authorId);
@@ -184,9 +175,8 @@ public class NewsServiceImpl implements NewsService {
         }
     }
 
-    /**
-     * Получить количество опубликованных новостей автора
-     */
+
+    //Получить количество опубликованных новостей автора
     public int getPublishedCountByAuthor(int authorId) throws ServiceException {
         try {
             List<News> authorNews = newsDao.findByAuthorId(authorId);

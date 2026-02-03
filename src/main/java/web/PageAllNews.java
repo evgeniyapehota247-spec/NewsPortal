@@ -1,4 +1,3 @@
-// PageAllNews.java
 package web;
 
 import bean.News;

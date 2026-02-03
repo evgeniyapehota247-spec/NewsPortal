@@ -62,7 +62,6 @@ public class PageMyNews extends HttpServlet {
                     request.setAttribute("myNews", filteredNews);
                     request.setAttribute("currentStatus", statusId);
                 } catch (NumberFormatException e) {
-                    // Игнорируем некорректный параметр
                 }
             }
 

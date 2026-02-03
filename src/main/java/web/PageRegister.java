@@ -91,13 +91,11 @@ public class PageRegister extends HttpServlet {
             if (success) {
                 response.sendRedirect(request.getContextPath() + "/login?after_reg=true");
             } else {
-                // Общая ошибка регистрации
                 request.setAttribute("error", "Ошибка регистрации. Попробуйте позже.");
                 request.getRequestDispatcher("/WEB-INF/jsp/register.jsp").forward(request, response);
             }
 
         } catch (ServiceException e) {
-            // Конкретные ошибки
             String errorMessage = e.getMessage();
 
             if (errorMessage.contains("email") || errorMessage.contains("уже существует")) {
@@ -121,7 +119,6 @@ public class PageRegister extends HttpServlet {
             request.getRequestDispatcher("/WEB-INF/jsp/register.jsp").forward(request, response);
 
         } catch (Exception e) {
-            // Общая ошибка
             request.setAttribute("error", "Произошла ошибка: " + e.getMessage());
             request.getRequestDispatcher("/WEB-INF/jsp/register.jsp").forward(request, response);
         }

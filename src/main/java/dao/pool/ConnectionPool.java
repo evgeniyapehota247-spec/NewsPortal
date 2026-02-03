@@ -1,5 +1,7 @@
 package dao.pool;
 
+import lombok.Getter;
+
 import java.sql.*;
 import java.util.Map;
 import java.util.Properties;
@@ -9,21 +11,17 @@ import java.util.concurrent.Executor;
 
 public final class ConnectionPool {
 
+    @Getter
     private static ConnectionPool instance = null;
 
-    private BlockingQueue<Connection> availableConnections;
-    private BlockingQueue<Connection> usedConnections;
+    private final BlockingQueue<Connection> availableConnections;
+    private final BlockingQueue<Connection> usedConnections;
 
     public static synchronized ConnectionPool getFirstInstance(String url, String user, String password, int poolSize) throws SQLException {
 
         if (instance == null) {
             instance = new ConnectionPool(url, user, password, poolSize);
         }
-        return instance;
-    }
-
-    public static  ConnectionPool getInstance()  {
-
         return instance;
     }
 

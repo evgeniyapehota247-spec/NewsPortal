@@ -37,10 +37,6 @@ public class PageNewsDelete extends HttpServlet {
 
         try {
             int newsId = Integer.parseInt(idParam);
-
-            // Можно добавить проверку, что новость принадлежит пользователю
-            // или что пользователь - администратор
-
             newsService.delete(newsId);
             response.sendRedirect(request.getContextPath() + "/myNews?success=News deleted successfully");
 

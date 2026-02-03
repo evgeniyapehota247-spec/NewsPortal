@@ -189,10 +189,7 @@
     </div>
 </section>
 
-<!-- Основной контент -->
 <main class="container">
-    <!-- Быстрый доступ -->
-    <!-- В вашем userHome.jsp обновите блок быстрого доступа -->
     <div class="row mb-5">
         <div class="col-12">
             <div class="card">

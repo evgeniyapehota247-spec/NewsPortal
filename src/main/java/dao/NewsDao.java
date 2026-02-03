@@ -14,7 +14,6 @@ public interface NewsDao {
 
     News findById(int id) throws DaoException;
 
-    // Новые методы
     List<News> findByAuthorId(int authorId) throws DaoException;
 
     List<News> findByStatus(int statusId) throws DaoException; // добавлен этот метод
@@ -24,4 +23,5 @@ public interface NewsDao {
     void update(News news) throws DaoException;
 
     void delete(int id) throws DaoException;
+
 }

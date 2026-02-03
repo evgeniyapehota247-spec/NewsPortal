@@ -11,7 +11,6 @@ import java.util.List;
 
 public class DBNewsDao implements NewsDao {
 
-    // Все SQL запросы должны присоединять таблицу user_details
     private static final String SELECT_ALL =
             "SELECT n.*, CONCAT(ud.firstname, ' ', ud.lastname) as author_name " +
                     "FROM news n " +
@@ -49,7 +48,6 @@ public class DBNewsDao implements NewsDao {
             "UPDATE news SET title=?, brief=?, content_path=?, news_status_id=?, publish_date=?, updated_at=NOW() " +
                     "WHERE id=?";
 
-    // Добавьте эту константу DELETE
     private static final String DELETE =
             "DELETE FROM news WHERE id = ?";
 
@@ -169,7 +167,6 @@ public class DBNewsDao implements NewsDao {
         }
     }
 
-    // Новый метод для получения новостей по автору
     public List<News> findByAuthorId(int authorId) throws DaoException {
         List<News> list = new ArrayList<>();
 
@@ -270,7 +267,6 @@ public class DBNewsDao implements NewsDao {
         news.setBrief(rs.getString("brief"));
         news.setContent_path(rs.getString("content_path"));
 
-        // Даты
         Timestamp publishDate = rs.getTimestamp("publish_date");
         if (publishDate != null) {
             news.setPublish_date(publishDate.toLocalDateTime());
@@ -290,13 +286,7 @@ public class DBNewsDao implements NewsDao {
         news.setNews_status_id(rs.getInt("news_status_id"));
         news.setAuthor_id(rs.getInt("author_id"));
 
-        // Добавьте имя автора
-//        String authorName = rs.getString("author_name");
-//        if (authorName != null) {
-//            news.setAuthor_name(authorName);
-//        }
 
-        // Преобразуем статус ID в название (исправленный switch для Java 11)
         int statusId = news.getNews_status_id();
         String statusName;
         switch (statusId) {

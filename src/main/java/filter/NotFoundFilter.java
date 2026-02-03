@@ -14,10 +14,10 @@ public class NotFoundFilter implements Filter {
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-        // Добавьте ВСЕ ваши реальные сервлеты и пути JSP
+
         existingPaths.add("/");
         existingPaths.add("/home");
-        existingPaths.add("/allNews") ;  // Добавляем наш новый путь
+        existingPaths.add("/allNews");
         existingPaths.add("/login");
         existingPaths.add("/register");
         existingPaths.add("/logout");
@@ -27,10 +27,6 @@ public class NotFoundFilter implements Filter {
         existingPaths.add("/viewNews");
         existingPaths.add("/editNews");
         existingPaths.add("/deleteNews");
-
-
-
-
 
         System.out.println("===== NotFoundFilter ИНИЦИАЛИЗИРОВАН =====");
         System.out.println("Зарегистрированные пути: " + existingPaths);

@@ -15,4 +15,5 @@ public class UserDetails {
     private String firstName;
     private String lastName;
     private LocalDate dob;
+
 }

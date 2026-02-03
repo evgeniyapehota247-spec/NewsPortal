@@ -18,13 +18,12 @@ import java.util.List;
 public class PageHome extends HttpServlet {
 
     private final NewsService newsService = ServiceProvider.getInstance().getNewsService();
-    private static final int PAGE_SIZE = 3; // 10 новостей на главной странице
+    private static final int PAGE_SIZE = 3; // 3 новостей на главной странице
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        // Устанавливаем атрибуты для JSP
         request.setAttribute("pageTitle", "Новости Беларуси");
         request.setAttribute("welcomeMessage", "Добро пожаловать на наш портал!");
 

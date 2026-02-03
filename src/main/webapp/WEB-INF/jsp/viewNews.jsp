@@ -29,7 +29,6 @@
         <header class="mb-4">
             <h1>${news.title}</h1>
             <div class="text-muted mb-3">
-<%--                <i class="fas fa-user me-1"></i> ${news.author_name}--%>
                 <i class="fas fa-calendar ms-3 me-1"></i> ${news.publish_date}
                 <i class="fas fa-eye ms-3 me-1"></i> Просмотры: 0
             </div>

@@ -35,7 +35,7 @@ public class PageMyNews extends HttpServlet {
         User user = (User) session.getAttribute("auth");
 
         try {
-            // Получаем новости пользователя
+            // Получаем новости только этого пользователя
             List<News> userNews = newsService.findByAuthorId(user.getId());
 
             request.setAttribute("myNews", userNews);
@@ -67,8 +67,12 @@ public class PageMyNews extends HttpServlet {
             }
 
             // Статистика
-            long publishedCount = userNews.stream().filter(n -> n.getNews_status_id() == 2).count();
-            long draftCount = userNews.stream().filter(n -> n.getNews_status_id() == 1).count();
+            long publishedCount = userNews.stream()
+                    .filter(n -> n.getNews_status_id() == 2)
+                    .count();
+            long draftCount = userNews.stream()
+                    .filter(n -> n.getNews_status_id() == 1)
+                    .count();
 
             request.setAttribute("publishedCount", publishedCount);
             request.setAttribute("draftCount", draftCount);

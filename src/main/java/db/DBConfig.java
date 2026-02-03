@@ -5,7 +5,7 @@ import java.sql.*;
 public class DBConfig {
     private static final String URL = "jdbc:mysql://127.0.0.1:3306/portal?useSSL=false&serverTimezone=UTC";
     private static final String USER = "root";
-    private static final String PASSWORD = "root";
+    private static final String PASSWORD = "pehotaroot1234";
 
     static {
         try {

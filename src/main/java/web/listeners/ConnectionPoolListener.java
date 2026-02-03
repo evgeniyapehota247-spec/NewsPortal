@@ -29,7 +29,7 @@ public class ConnectionPoolListener implements ServletContextListener {
             ConnectionPool pool = ConnectionPool.getFirstInstance(
                     "jdbc:mysql://127.0.0.1:3306/portal?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true",
                     "root",
-                    "root",
+                    "pehotaroot1234",
                     5);
             System.out.println("✅ ConnectionPool успешно создан");
 

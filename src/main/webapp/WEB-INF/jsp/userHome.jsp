@@ -200,22 +200,25 @@
                     <div class="row g-3">
                         <div class="col-md-3">
                             <a href="createNews" class="btn btn-success w-100">
-                                <i class="fas fa-plus me-2"></i>Новая запись
+                                <i class="fas fa-plus me-2"></i>Создать новость
                             </a>
                         </div>
                         <div class="col-md-3">
                             <a href="myNews" class="btn btn-outline-success w-100">
                                 <i class="fas fa-list me-2"></i>Мои новости
+                                <span class="badge bg-success ms-2">${totalCount}</span>
                             </a>
                         </div>
                         <div class="col-md-3">
-                            <a href="favorites" class="btn btn-outline-primary w-100">
-                                <i class="fas fa-bookmark me-2"></i>Закладки
+                            <a href="myNews?status=2" class="btn btn-outline-primary w-100">
+                                <i class="fas fa-eye me-2"></i>Опубликовано
+                                <span class="badge bg-primary ms-2">${publishedCount}</span>
                             </a>
                         </div>
                         <div class="col-md-3">
-                            <a href="profile" class="btn btn-outline-secondary w-100">
-                                <i class="fas fa-cog me-2"></i>Настройки
+                            <a href="myNews?status=1" class="btn btn-outline-warning w-100">
+                                <i class="fas fa-edit me-2"></i>Черновики
+                                <span class="badge bg-warning ms-2">${draftCount}</span>
                             </a>
                         </div>
                     </div>

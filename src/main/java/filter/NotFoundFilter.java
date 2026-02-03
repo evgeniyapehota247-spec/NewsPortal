@@ -22,6 +22,7 @@ public class NotFoundFilter implements Filter {
         existingPaths.add("/register");
         existingPaths.add("/logout");
         existingPaths.add("/userHome");
+        existingPaths.add("/createNews");
 
         System.out.println("===== NotFoundFilter ИНИЦИАЛИЗИРОВАН =====");
         System.out.println("Зарегистрированные пути: " + existingPaths);

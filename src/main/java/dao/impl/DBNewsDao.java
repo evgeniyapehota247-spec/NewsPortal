@@ -11,118 +11,111 @@ import java.util.List;
 
 public class DBNewsDao implements NewsDao {
 
-    // Имитация базы данных
-    private List<News> allNews = new ArrayList<>();
+    // Все SQL запросы должны присоединять таблицу user_details
+    private static final String SELECT_ALL =
+            "SELECT n.*, CONCAT(ud.firstname, ' ', ud.lastname) as author_name " +
+                    "FROM news n " +
+                    "LEFT JOIN users u ON n.author_id = u.id " +
+                    "LEFT JOIN user_details ud ON u.id = ud.users_id " +
+                    "ORDER BY n.created_at DESC";
 
-    public DBNewsDao() {
-        // Заполняем тестовыми данными
-        for (int i = 1; i <= 10; i++) {
-            allNews.add(new News(
-                    i,
-                    "Новость " + i,
-                    "Краткое описание новости " + i,
-                    "Полное содержание новости " + i
-            ));
-        }
-    }
+    private static final String SELECT_PAGINATED =
+            "SELECT n.*, CONCAT(ud.firstname, ' ', ud.lastname) as author_name " +
+                    "FROM news n " +
+                    "LEFT JOIN users u ON n.author_id = u.id " +
+                    "LEFT JOIN user_details ud ON u.id = ud.users_id " +
+                    "ORDER BY n.created_at DESC LIMIT ? OFFSET ?";
+
+    private static final String SELECT_BY_ID =
+            "SELECT n.*, CONCAT(ud.firstname, ' ', ud.lastname) as author_name " +
+                    "FROM news n " +
+                    "LEFT JOIN users u ON n.author_id = u.id " +
+                    "LEFT JOIN user_details ud ON u.id = ud.users_id " +
+                    "WHERE n.id = ?";
+
+    private static final String SELECT_BY_AUTHOR =
+            "SELECT n.*, CONCAT(ud.firstname, ' ', ud.lastname) as author_name " +
+                    "FROM news n " +
+                    "LEFT JOIN users u ON n.author_id = u.id " +
+                    "LEFT JOIN user_details ud ON u.id = ud.users_id " +
+                    "WHERE n.author_id = ? " +
+                    "ORDER BY n.created_at DESC";
+
+    private static final String INSERT =
+            "INSERT INTO news(title, brief, content_path, author_id, news_status_id, publish_date) " +
+                    "VALUES(?,?,?,?,?,?)";
+
+    private static final String UPDATE =
+            "UPDATE news SET title=?, brief=?, content_path=?, news_status_id=?, publish_date=?, updated_at=NOW() " +
+                    "WHERE id=?";
+
+    // Добавьте эту константу DELETE
+    private static final String DELETE =
+            "DELETE FROM news WHERE id = ?";
+
+    private static final String COUNT_ALL =
+            "SELECT COUNT(*) FROM news";
 
     @Override
     public List<News> findAll(int offset, int limit) throws DaoException {
-        int end = Math.min(offset + limit, allNews.size());
-        return allNews.subList(offset, end);
+        List<News> list = new ArrayList<>();
+
+        try (Connection con = ConnectionPool.getInstance().takeConnection();
+             PreparedStatement ps = con.prepareStatement(SELECT_PAGINATED)) {
+
+            ps.setInt(1, limit);
+            ps.setInt(2, offset);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    list.add(map(rs));
+                }
+            }
+
+        } catch (SQLException e) {
+            throw new DaoException(e);
+        }
+        return list;
+    }
+
+    @Override
+    public List<News> findByStatus(int statusId) throws DaoException {
+        List<News> list = new ArrayList<>();
+
+        String sql = "SELECT n.*, CONCAT(ud.firstname, ' ', ud.lastname) as author_name " +
+                "FROM news n " +
+                "LEFT JOIN users u ON n.author_id = u.id " +
+                "LEFT JOIN user_details ud ON u.id = ud.users_id " +
+                "WHERE n.news_status_id = ? " +
+                "ORDER BY n.created_at DESC";
+
+        try (Connection con = ConnectionPool.getInstance().takeConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, statusId);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    list.add(map(rs));
+                }
+            }
+
+        } catch (SQLException e) {
+            throw new DaoException(e);
+        }
+        return list;
     }
 
     @Override
     public int getTotalCount() throws DaoException {
-        return allNews.size();
-    }
-
-    @Override
-    public List<News> topNews(int count) throws DaoException {
-
-        List<News> topNews = new ArrayList<News>();
-
-        topNews.add(new News(
-                1,
-                "QQQРост промышленного производства в Беларуси",
-                "AAAЗа последний квардекс наблюдается устойчивый рост промышленного производства на 5.3% по сравнению с аналогичным периодом прошлого года.",
-                "content 1"));
-        topNews.add(new News(
-                2,
-                "Открытие нового музея в Минске",
-                "В столице открылся современный музей истории Беларуси с интерактивными экспонатами и цифровыми технологиями",
-                "content 2"));
-        topNews.add(new News(
-                3,
-                "Белорусские атлеты завоевали медали на международных соревнованиях",
-                "На чемпионате Европы по легкой атлетике белорусские спортсмены показали выдающиеся результаты, завоевав 3 золотые медали.",
-                "content 3"));
-        topNews.add(new News(
-                1,
-                "QQQРост промышленного производства в Беларуси",
-                "AAAЗа последний квардекс наблюдается устойчивый рост промышленного производства на 5.3% по сравнению с аналогичным периодом прошлого года.",
-                "content 4")); topNews.add(new News(
-                1,
-                "QQQРост промышленного производства в Беларуси",
-                "AAAЗа последний квардекс наблюдается устойчивый рост промышленного производства на 5.3% по сравнению с аналогичным периодом прошлого года.",
-                "content 5")); topNews.add(new News(
-                1,
-                "QQQРост промышленного производства в Беларуси",
-                "AAAЗа последний квардекс наблюдается устойчивый рост промышленного производства на 5.3% по сравнению с аналогичным периодом прошлого года.",
-                "content 6")); topNews.add(new News(
-                1,
-                "QQQРост промышленного производства в Беларуси",
-                "AAAЗа последний квардекс наблюдается устойчивый рост промышленного производства на 5.3% по сравнению с аналогичным периодом прошлого года.",
-                "content 7"));
-
-
-
-
-        return topNews;
-    }
-
-    private static final String SELECT_ALL =
-            "SELECT * FROM news ORDER BY created_at DESC";
-
-    private static final String SELECT_BY_ID =
-            "SELECT * FROM news WHERE id = ?";
-
-    private static final String INSERT =
-            "INSERT INTO news(title, brief, content) VALUES(?,?,?)";
-
-    private static final String UPDATE =
-            "UPDATE news SET title=?, brief=?, content=? WHERE id=?";
-
-//    @Override
-//    public List<News> findAll() throws DaoException {
-//        List<News> list = new ArrayList<>();
-//
-//        try (Connection con = ConnectionPool.getInstance().takeConnection();
-//             Statement st = con.createStatement();
-//             ResultSet rs = st.executeQuery(SELECT_ALL)) {
-//
-//            while (rs.next()) {
-//                list.add(map(rs));
-//            }
-//
-//        } catch (SQLException e) {
-//            throw new DaoException(e);
-//        }
-//        return list;
-//    }
-
-    @Override
-    public News findById(int id) throws DaoException {
         try (Connection con = ConnectionPool.getInstance().takeConnection();
-             PreparedStatement ps = con.prepareStatement(SELECT_BY_ID)) {
-
-            ps.setInt(1, id);
-            ResultSet rs = ps.executeQuery();
+             Statement st = con.createStatement();
+             ResultSet rs = st.executeQuery(COUNT_ALL)) {
 
             if (rs.next()) {
-                return map(rs);
+                return rs.getInt(1);
             }
-            return null;
+            return 0;
 
         } catch (SQLException e) {
             throw new DaoException(e);
@@ -130,14 +123,94 @@ public class DBNewsDao implements NewsDao {
     }
 
     @Override
+    public List<News> topNews(int count) throws DaoException {
+        List<News> list = new ArrayList<>();
+
+        String sql = "SELECT n.*, CONCAT(ud.firstname, ' ', ud.lastname) as author_name " +
+                "FROM news n " +
+                "LEFT JOIN users u ON n.author_id = u.id " +
+                "LEFT JOIN user_details ud ON u.id = ud.users_id " +
+                "WHERE n.news_status_id = 2 AND n.publish_date <= NOW() " +
+                "ORDER BY n.publish_date DESC LIMIT ?";
+
+        try (Connection con = ConnectionPool.getInstance().takeConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, count);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    list.add(map(rs));
+                }
+            }
+
+        } catch (SQLException e) {
+            throw new DaoException(e);
+        }
+        return list;
+    }
+
+    @Override
+    public News findById(int id) throws DaoException {
+        try (Connection con = ConnectionPool.getInstance().takeConnection();
+             PreparedStatement ps = con.prepareStatement(SELECT_BY_ID)) {
+
+            ps.setInt(1, id);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return map(rs);
+                }
+                return null;
+            }
+
+        } catch (SQLException e) {
+            throw new DaoException(e);
+        }
+    }
+
+    // Новый метод для получения новостей по автору
+    public List<News> findByAuthorId(int authorId) throws DaoException {
+        List<News> list = new ArrayList<>();
+
+        try (Connection con = ConnectionPool.getInstance().takeConnection();
+             PreparedStatement ps = con.prepareStatement(SELECT_BY_AUTHOR)) {
+
+            ps.setInt(1, authorId);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    list.add(map(rs));
+                }
+            }
+
+        } catch (SQLException e) {
+            throw new DaoException(e);
+        }
+        return list;
+    }
+
+    @Override
     public void save(News news) throws DaoException {
         try (Connection con = ConnectionPool.getInstance().takeConnection();
-             PreparedStatement ps = con.prepareStatement(INSERT)) {
+             PreparedStatement ps = con.prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS)) {
 
             ps.setString(1, news.getTitle());
             ps.setString(2, news.getBrief());
-            ps.setString(3, news.getContent());
+            ps.setString(3, news.getContent_path()); // или news.getContentPath()
+            ps.setInt(4, news.getAuthor_id());
+            ps.setInt(5, news.getNews_status_id()); // 1 - черновик по умолчанию
+            ps.setTimestamp(6, news.getPublish_date() != null ?
+                    Timestamp.valueOf(news.getPublish_date()) : Timestamp.valueOf(java.time.LocalDateTime.now()));
+
             ps.executeUpdate();
+
+            // Получаем сгенерированный ID
+            try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    news.setId(generatedKeys.getInt(1));
+                }
+            }
 
         } catch (SQLException e) {
             throw new DaoException(e);
@@ -151,26 +224,18 @@ public class DBNewsDao implements NewsDao {
 
             ps.setString(1, news.getTitle());
             ps.setString(2, news.getBrief());
-            ps.setString(3, news.getContent());
-            ps.setInt(4, news.getId());
+            ps.setString(3, news.getContent_path()); // или news.getContentPath()
+            ps.setInt(4, news.getNews_status_id());
+            ps.setTimestamp(5, news.getPublish_date() != null ?
+                    Timestamp.valueOf(news.getPublish_date()) : null);
+            ps.setInt(6, news.getId());
+
             ps.executeUpdate();
 
         } catch (SQLException e) {
             throw new DaoException(e);
         }
     }
-
-    private News map(ResultSet rs) throws SQLException {
-        return new News(
-                rs.getInt("id"),
-                rs.getString("title"),
-                rs.getString("brief"),
-                rs.getString("content")
-        );
-    }
-
-    private static final String DELETE =
-            "DELETE FROM news WHERE id = ?";
 
     @Override
     public void delete(int id) throws DaoException {
@@ -185,4 +250,59 @@ public class DBNewsDao implements NewsDao {
         }
     }
 
+    private News map(ResultSet rs) throws SQLException {
+        News news = new News();
+
+        news.setId(rs.getInt("id"));
+        news.setTitle(rs.getString("title"));
+        news.setBrief(rs.getString("brief"));
+        news.setContent_path(rs.getString("content_path"));
+
+        // Даты
+        Timestamp publishDate = rs.getTimestamp("publish_date");
+        if (publishDate != null) {
+            news.setPublish_date(publishDate.toLocalDateTime());
+        }
+
+        Timestamp createdAt = rs.getTimestamp("created_at");
+        if (createdAt != null) {
+            news.setCreated_at(createdAt.toLocalDateTime());
+        }
+
+        Timestamp updatedAt = rs.getTimestamp("updated_at");
+        if (updatedAt != null) {
+            news.setUpdated_at(updatedAt.toLocalDateTime());
+        }
+
+        // Статус и автор
+        news.setNews_status_id(rs.getInt("news_status_id"));
+        news.setAuthor_id(rs.getInt("author_id"));
+
+        // Добавьте имя автора
+//        String authorName = rs.getString("author_name");
+//        if (authorName != null) {
+//            news.setAuthor_name(authorName);
+//        }
+
+        // Преобразуем статус ID в название (исправленный switch для Java 11)
+        int statusId = news.getNews_status_id();
+        String statusName;
+        switch (statusId) {
+            case 1:
+                statusName = "Черновик";
+                break;
+            case 2:
+                statusName = "Опубликовано";
+                break;
+            case 3:
+                statusName = "На модерации";
+                break;
+            default:
+                statusName = "Неизвестно";
+                break;
+        }
+        news.setStatus_name(statusName);
+
+        return news;
+    }
 }

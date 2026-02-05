@@ -90,7 +90,7 @@
                 <div class="col-md-4">
                     <div class="mb-3">
                         <label for="status" class="form-label">Статус</label>
-                        <select class="form-select" id="status" name="status">
+                        <select class="form-select" id="news_status_id" name="news_status_id">
                             <option value="1" ${news.news_status_id == 1 ? 'selected' : ''}>Черновик</option>
                             <option value="2" ${news.news_status_id == 2 ? 'selected' : ''}>Опубликовать</option>
                         </select>
@@ -112,7 +112,7 @@
 
             <div class="mb-3">
                 <label for="content" class="form-label">Полный текст</label>
-                <textarea class="form-control" id="content" name="content"
+                <textarea class="form-control" id="content_path" name="content_path"
                           rows="10" placeholder="Полный текст новости">${news.content_path}</textarea>
             </div>
 

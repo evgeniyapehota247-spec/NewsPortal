@@ -1,32 +1,31 @@
 package service;
 
 import bean.News;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public interface NewsService {
 
-    List<News> takeTopNews(int count) throws ServiceException;
+    List<News> findAllNews(int page, int pageSize);
 
-    List<News> findAllNews(int page, int pageSize) throws ServiceException;
+    List<News> findTopNews(int count);
 
-    int getTotalPages(int pageSize) throws ServiceException;
+    List<News> findByAuthorId(int authorId);
 
-    int getTotalNewsCount() throws ServiceException;
+    List<News> findByStatus(int statusId);
 
-    List<News> getAll() throws ServiceException;
+    News findById(int id);
 
-    News getById(int id) throws ServiceException;
+    void save(News news);
 
-    List<News> findByAuthorId(int authorId) throws ServiceException;
+    void update(News news);
 
-    List<News> findByStatus(int statusId) throws ServiceException;
+    void delete(int id);
 
-    List<News> findPublishedNews(int page, int pageSize) throws ServiceException;
+    int getTotalCount();
 
-    void create(News news) throws ServiceException;
+    int getTotalPages(int pageSize);
 
-    void update(News news) throws ServiceException;
-
-    void delete(int id) throws ServiceException;
 }

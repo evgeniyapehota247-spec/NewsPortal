@@ -11,15 +11,15 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class News {
 
-    private int id;
+    private Integer id;
     private String title;
     private String brief;
     private String content_path;
     private LocalDateTime publish_date;
-    private int news_status_id; // 1 - черновик, 2 - опубликовано и т.д.
+    private Integer news_status_id;
     private LocalDateTime created_at;
     private LocalDateTime updated_at;
-    private int author_id;
+    private Integer author_id;
     private String status_name;
 
 }
